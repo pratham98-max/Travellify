@@ -1,0 +1,66 @@
+{% extends 'layout.htm' %}
+{% block content %}
+<h3 class="text-center mb-4">📊 Admin Dashboard</h3>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card p-3 shadow-sm mb-4">
+            <h5 class="text-primary">All Bookings</h5>
+            {% if bookings %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Hotel</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in bookings %}
+                    <tr>
+                        <td>{{ b.name }}</td>
+                        <td>{{ b.hotel }}</td>
+                        <td>{{ b.checkin }}</td>
+                        <td>{{ b.checkout }}</td>
+                        <td>₹{{ b.price }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No bookings yet.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card p-3 shadow-sm mb-4">
+            <h5 class="text-success">All Reviews</h5>
+            {% if reviews %}
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Hotel</th>
+                        <th>Rating</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in reviews %}
+                    <tr>
+                        <td>{{ r.hotel }}</td>
+                        <td>{{ r.rating }} ⭐</td>
+                        <td>{{ r.comment }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No reviews yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'layout.htm' %}
+{% block content %}
+<h3>Book {{ hotel.name }}</h3>
+<div class="card p-4 shadow-sm">
+    <form method="POST">
+        <div class="mb-3">
+            <label>Your Name</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Check-in</label>
+            <input type="date" name="checkin" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Check-out</label>
+            <input type="date" name="checkout" class="form-control" required>
+        </div>
+        <p class="fw-bold">Price: ₹{{ hotel.price }}</p>
+        <button class="btn btn-success" type="submit">Confirm Booking</button>
+    </form>
+</div>
+{% endblock %}

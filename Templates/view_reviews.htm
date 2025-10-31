@@ -1,0 +1,15 @@
+{% extends 'layout.htm' %}
+{% block content %}
+<h2>All Reviews 🌟</h2>
+<table>
+  <tr><th>User</th><th>Destination</th><th>Rating</th><th>Comment</th></tr>
+  {% for r in reviews %}
+  <tr>
+    <td>{{ r.user }}</td>
+    <td>{{ r.destination }}</td>
+    <td>{{ r.rating }}</td>
+    <td>{{ r.comment }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'layout.htm' %}
+{% block content %}
+<h2>All Bookings 📘</h2>
+<table>
+  <tr><th>Name</th><th>Destination</th><th>Date</th><th>Days</th></tr>
+  {% for b in bookings %}
+  <tr>
+    <td>{{ b.name }}</td>
+    <td>{{ b.destination }}</td>
+    <td>{{ b.date }}</td>
+    <td>{{ b.days }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

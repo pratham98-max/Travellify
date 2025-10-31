@@ -1,0 +1,17 @@
+{% extends 'layout.htm' %}
+{% block content %}
+<h3>Review for {{ hotel.name }}</h3>
+<div class="card p-4 shadow-sm">
+    <form method="POST">
+        <div class="mb-3">
+            <label>Rating (1–5)</label>
+            <input type="number" name="rating" min="1" max="5" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label>Your Comment</label>
+            <textarea name="comment" class="form-control" required></textarea>
+        </div>
+        <button class="btn btn-primary">Submit Review</button>
+    </form>
+</div>
+{% endblock %}

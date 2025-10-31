@@ -1,0 +1,67 @@
+{% extends 'layout.htm' %}
+{% block content %}
+<div class="welcome-container">
+    <div class="welcome-text">
+        <h1>Welcome to TravelEase 🌍</h1>
+        <p>Your gateway to beautiful resorts, peaceful stays, and unforgettable journeys.</p>
+        <a href="{{ url_for('home') }}" class="btn-primary">Book Your Resort</a>
+
+    </div>
+</div>
+
+<style>
+.welcome-container {
+    position: relative;
+    height: 85vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') no-repeat center center/cover;
+    color: white;
+    text-align: center;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.welcome-text {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 40px 60px;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+.welcome-text h1 {
+    font-size: 3em;
+    margin-bottom: 15px;
+    animation: slideDown 1.2s ease-out;
+}
+
+.welcome-text p {
+    font-size: 1.2em;
+    margin-bottom: 25px;
+}
+
+.btn-primary {
+    background-color: #00bfa5;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 1.1em;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background-color: #00897b;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+</style>
+{% endblock %}
