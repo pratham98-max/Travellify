@@ -1,0 +1,62 @@
+{% extends 'layout.htm' %}
+{% block content %}
+<h2 class="text-center mb-4">👑 Admin Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card p-3 shadow-sm mb-4">
+            <h5 class="text-primary">All Bookings</h5>
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>User</th>
+                        <th>Hotel</th>
+                        <th>Check-in</th>
+                        <th>Check-out</th>
+                        <th>Price</th>
+                        <th>Paid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in bookings %}
+                    <tr>
+                        <td>{{ b.name }}</td>
+                        <td>{{ b.hotel }}</td>
+                        <td>{{ b.checkin }}</td>
+                        <td>{{ b.checkout }}</td>
+                        <td>₹{{ b.price }}</td>
+                        <td>{{ "✅" if b.paid else "❌" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card p-3 shadow-sm mb-4">
+            <h5 class="text-success">All Reviews</h5>
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>User</th>
+                        <th>Hotel</th>
+                        <th>Rating</th>
+                        <th>Comment</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in reviews %}
+                    <tr>
+                        <td>{{ r.username }}</td>
+                        <td>{{ r.hotel }}</td>
+                        <td>{{ r.rating }} ⭐</td>
+                        <td>{{ r.comment }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

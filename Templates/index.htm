@@ -1,51 +1,141 @@
 {% extends 'layout.htm' %}
 {% block content %}
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">🏨 Explore Hotels & Resorts</h2>
-        <a href="{{ url_for('dashboard') }}" class="btn btn-dark">📊 Dashboard</a>
-    </div>
+<h2 class="text-center mb-4" style="font-family: 'Playfair Display', serif; font-size: 2.6rem; color: #081E3F;">
+    Discover Luxury Stays Around the World ✨
+</h2>
 
-    {% if query %}
-        <h5 class="text-muted">Search results for "{{ query }}"</h5>
-    {% endif %}
+{% if query %}
+<p class="text-center text-muted" style="font-size: 1.1rem;">
+    Search results for: <strong>{{ query }}</strong>
+</p>
+{% endif %}
 
-    <div class="row mt-4">
-        {% for destination in destinations %}
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-lg h-100 border-0">
-                {% if destination.image %}
-                <img src="{{ destination.image }}" class="card-img-top" alt="{{ destination.name }}" 
-                     style="height: 220px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
-                {% else %}
-                <img src="{{ url_for('static', filename='images/default.jpg') }}" class="card-img-top" alt="No image available"
-                     style="height: 220px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
-                {% endif %}
-                
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">{{ destination.name }}</h5>
-                    <p class="card-text text-muted">📍 {{ destination.location }}</p>
-                    {% if destination.description %}
-                    <p class="text-secondary" style="font-size: 0.9rem;">{{ destination.description }}</p>
-                    {% endif %}
-                    <p class="mb-3"><strong>💰 Price:</strong> ₹{{ destination.price }}</p>
+<div class="row justify-content-center mt-4">
 
-                    <div class="d-flex justify-content-between">
-                        <a href="{{ url_for('book', hotel_name=destination.name) }}" class="btn btn-primary w-50 me-2">Book Now</a>
-                        <a href="{{ url_for('review', hotel_name=destination.name) }}" class="btn btn-outline-secondary w-50">View / Add Reviews</a>
-                    </div>
-                </div>
+{% for destination in destinations %}
+<div class="col-md-4 mb-4">
+    <div class="card hotel-card shadow-lg">
+
+        <!-- Image -->
+     {% if destination.images %}
+    <img src="{{ destination.images[0] }}" class="card-img-top" alt="{{ destination.name }}"
+         style="height: 220px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+{% else %}
+    <img src="{{ url_for('static', filename='images/default.jpg') }}" class="card-img-top" alt="No image available"
+         style="height: 220px; object-fit: cover; border-top-left-radius: 15px; border-top-right-radius: 15px;">
+{% endif %}
+
+
+        <div class="card-body text-center">
+
+            <!-- Name -->
+            <h3 class="hotel-title">{{ destination.name }}</h3>
+
+            <!-- Location -->
+            <p class="text-muted mb-1">📍 {{ destination.location }}</p>
+
+            <!-- Rating -->
+            {% if destination.avg_rating %}
+                <p class="rating">⭐ {{ destination.avg_rating }} 
+                <span class="review-count">({{ destination.review_count }} reviews)</span></p>
+            {% else %}
+                <p class="text-muted fst-italic">No reviews yet</p>
+            {% endif %}
+
+            <!-- Price -->
+            <p class="price mt-2">From <span>₹{{ destination.price }}</span> / night</p>
+
+            <!-- Buttons -->
+            <div class="d-flex justify-content-center mt-3">
+                <a href="{{ url_for('hotel_details', hotel_name=destination.name) }}" class="btn-main me-2">View Details</a>
+                <a href="{{ url_for('review', hotel_name=destination.name) }}" class="btn-review">Reviews</a>
             </div>
-        </div>
-        {% endfor %}
-    </div>
 
-    {% if destinations|length == 0 %}
-        <div class="text-center mt-5">
-            <h5 class="text-muted">No destinations found 😞</h5>
         </div>
-    {% endif %}
+    </div>
 </div>
+{% endfor %}
+
+</div>
+
+{% if destinations|length == 0 %}
+<div class="text-center mt-5">
+    <h5 class="text-muted">No destinations found 😞</h5>
+</div>
+{% endif %}
+
+<style>
+.hotel-card {
+    border-radius: 22px;
+    overflow: hidden;
+    border: none;
+    background: white;
+    transition: 0.4s;
+}
+
+.hotel-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0px 12px 40px rgba(0,0,0,0.18);
+}
+
+/* Image Animation */
+.hotel-img-wrapper {
+    height: 230px;
+    overflow: hidden;
+}
+
+.hotel-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.5s ease;
+}
+
+.hotel-card:hover .hotel-img-wrapper img {
+    transform: scale(1.12);
+}
+
+/* Text Styles */
+.hotel-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    color: #081E3F;
+}
+
+.rating { color: #D4AF37; font-size: 1.1rem; }
+.review-count { color: #777; font-size: 0.9rem; }
+.price { font-size: 1.15rem; font-weight: 500; }
+.price span { color: #D4AF37; }
+
+/* Buttons */
+.btn-main {
+    background: linear-gradient(45deg, #d4af37, #a77b07);
+    border: none;
+    padding: 8px 18px;
+    border-radius: 25px;
+    color: white;
+    transition: 0.3s;
+    font-weight: 500;
+}
+
+.btn-main:hover {
+    background: linear-gradient(45deg, #a77b07, #d4af37);
+}
+
+.btn-review {
+    border: 2px solid #081E3F;
+    padding: 8px 18px;
+    border-radius: 25px;
+    color: #081E3F;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-review:hover {
+    background: #081E3F;
+    color: white;
+}
+</style>
 
 {% endblock %}

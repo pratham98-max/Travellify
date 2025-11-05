@@ -1,12 +1,14 @@
-{% extends 'layout.htm' %}
+{% extends "layout.htm" %}
 {% block content %}
 <div class="container mt-4">
-    <h3>Select a Hotel to Add/View Reviews</h3>
+    <h3>Select a Hotel to Add / View Reviews</h3>
     <ul class="list-group mt-3">
-        {% for hotel in hotels %}
+        {% for d in destinations %}
         <li class="list-group-item d-flex justify-content-between align-items-center">
-            {{ hotel.name }}
-            <a href="{{ url_for('review', hotel_name=hotel.name) }}" class="btn btn-sm btn-outline-primary">Open Reviews</a>
+            {{ d.name }} — {{ d.location }}
+            <a href="{{ url_for('review', hotel_name=d.name) }}" class="btn btn-sm btn-outline-primary">
+                ⭐ Open Reviews
+            </a>
         </li>
         {% endfor %}
     </ul>

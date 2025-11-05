@@ -1,0 +1,185 @@
+{% extends 'layout.htm' %}
+{% block content %}
+
+<!-- HERO GALLERY (Bootstrap Carousel) -->
+<div id="hotelGallery" class="carousel slide mb-4" data-bs-ride="carousel">
+  <div class="carousel-inner" style="border-radius:16px; overflow:hidden;">
+    {% for img in images %}
+      <div class="carousel-item {% if loop.index0 == 0 %}active{% endif %}">
+        <img src="{{ img }}" class="d-block w-100" style="height:420px; object-fit:cover;" alt="Hotel image {{ loop.index }}">
+      </div>
+    {% endfor %}
+    {% if images|length == 0 %}
+      <div class="carousel-item active">
+        <div class="bg-secondary d-flex align-items-center justify-content-center" style="height:420px;">
+          <span class="text-white-50">No images available</span>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  {% if images|length > 1 %}
+  <button class="carousel-control-prev" type="button" data-bs-target="#hotelGallery" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#hotelGallery" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+  {% endif %}
+</div>
+
+<!-- TOP SECTION -->
+<div class="row g-4">
+  <div class="col-lg-8">
+    <h2 style="font-family:'Playfair Display',serif; font-weight:600;">{{ hotel.name }}</h2>
+    <p class="text-muted mb-1">📍 {{ hotel.location }}</p>
+    {% if avg_rating %}
+      <p class="mb-3" style="color:#D4AF37;">⭐ {{ avg_rating }} <span class="text-muted">({{ reviews|length }} reviews)</span></p>
+    {% else %}
+      <p class="text-muted mb-3 fst-italic">No reviews yet</p>
+    {% endif %}
+    {% if hotel.description %}
+      <p class="mb-4">{{ hotel.description }}</p>
+    {% endif %}
+
+    <!-- ROOM TYPE SELECTOR + LIVE PRICE + BOOK -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-4">
+            <label class="form-label">Room Type</label>
+            <select id="roomType" class="form-select">
+              {% for rt in room_types %}
+                <option value="{{ rt.name }}" data-price="{{ rt.price }}">{{ rt.name }} — ₹{{ rt.price }}/night</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Nights</label>
+            <input id="nights" type="number" class="form-control" min="1" value="1">
+          </div>
+          <div class="col-md-5 text-end">
+            <div class="text-muted small">Estimated Total</div>
+            <div class="fs-4 fw-semibold">₹<span id="estTotal">0</span></div>
+            <div class="mt-2">
+              <a id="bookBtn" class="btn-main">Book Now</a>
+              <a href="{{ url_for('review', hotel_name=hotel.name) }}" class="btn btn-outline-dark ms-2" style="border-radius:25px;">Add / View Reviews</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRICE COMPARISON CHART (Chart.js) -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="mb-3" style="font-family:'Playfair Display',serif;">Room Price Comparison</h5>
+        <canvas id="priceChart" height="110"></canvas>
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <h4 class="mt-4" style="font-family:'Playfair Display',serif;">Guest Reviews</h4>
+    {% for r in reviews %}
+      <div class="review-box mb-3 p-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <strong class="review-user">{{ r.username }}</strong>
+          <span class="review-rating">⭐ {{ r.rating }}</span>
+        </div>
+        <p class="review-text mt-2">{{ r.comment }}</p>
+      </div>
+    {% endfor %}
+    {% if reviews|length == 0 %}
+      <p class="text-muted">No reviews yet. Be the first to share your experience ✨</p>
+    {% endif %}
+  </div>
+
+  <!-- RIGHT SIDEBAR: MAP + QUICK SUMMARY -->
+  <div class="col-lg-4">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <h5 class="mb-2" style="font-family:'Playfair Display',serif;">Location</h5>
+        <div class="ratio ratio-4x3">
+          <iframe
+            src="https://www.google.com/maps?q={{ hotel.location | urlencode }}&output=embed"
+            style="border:0; width:100%; height:100%;"
+            loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+        <div class="small text-muted mt-2">Map is approximate based on location text.</div>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="mb-2" style="font-family:'Playfair Display',serif;">Highlights</h5>
+        <ul class="mb-0">
+          <li>Free Wi-Fi</li>
+          <li>Swimming Pool</li>
+          <li>24×7 Front Desk</li>
+          <li>Breakfast Included (select rooms)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.review-box { background: #fff; border-radius: 12px; border: 1px solid #eee; transition: .3s; }
+.review-box:hover { box-shadow: 0 8px 26px rgba(0,0,0,.12); transform: translateY(-2px); }
+.review-user { color: #081E3F; font-weight: 600; }
+.review-rating { color: #D4AF37; font-weight: 600; }
+.review-text { color:#333; }
+</style>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<script>
+(function() {
+  // Room types data from DOM
+  const roomSel = document.getElementById('roomType');
+  const nightsEl = document.getElementById('nights');
+  const totalEl = document.getElementById('estTotal');
+  const bookBtn = document.getElementById('bookBtn');
+
+  function getPrice() {
+    return Number(roomSel.selectedOptions[0].dataset.price || 0);
+  }
+
+  function recalc() {
+    const price = getPrice();
+    let n = parseInt(nightsEl.value || '1', 10);
+    if (isNaN(n) || n < 1) n = 1;
+    totalEl.textContent = (price * n).toString();
+    // update booking link (prefill room)
+    bookBtn.href = "{{ url_for('book', hotel_name=hotel.name) }}" + "?room=" + encodeURIComponent(roomSel.value);
+  }
+
+  roomSel.addEventListener('change', recalc);
+  nightsEl.addEventListener('input', recalc);
+  recalc();
+
+  // Build price comparison chart (room types)
+  const labels = Array.from(roomSel.options).map(o => o.value);
+  const prices = Array.from(roomSel.options).map(o => Number(o.dataset.price || 0));
+  const ctx = document.getElementById('priceChart');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: '₹ per night',
+        data: prices
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { callback: v => '₹' + v } }
+      }
+    }
+  });
+})();
+</script>
+
+{% endblock %}

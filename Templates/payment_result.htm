@@ -1,0 +1,20 @@
+{% extends "layout.htm" %}
+{% block content %}
+<div class="container mt-5" style="max-width: 700px;">
+  <div class="alert alert-success">
+    <h4 class="alert-heading">✅ Payment Successful!</h4>
+    <p>Your payment has been processed successfully.</p>
+    <hr>
+    <p><strong>Transaction ID:</strong> {{ txid }}</p>
+    <p><strong>Order ID:</strong> {{ order_id }}</p>
+    <p><strong>Hotel:</strong> {{ hotel }}</p>
+    <p><strong>Amount Paid:</strong> ₹{{ amount }}</p>
+  </div>
+
+  <a href="{{ url_for('download_receipt', txn_id=txid) }}" class="btn btn-outline-primary mb-3">
+    🧾 Download Receipt (PDF)
+  </a><br>
+
+  <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+</div>
+{% endblock %}

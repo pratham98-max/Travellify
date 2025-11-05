@@ -1,17 +1,50 @@
 {% extends 'layout.htm' %}
 {% block content %}
-<h3>Review for {{ hotel.name }}</h3>
-<div class="card p-4 shadow-sm">
-    <form method="POST">
-        <div class="mb-3">
-            <label>Rating (1–5)</label>
-            <input type="number" name="rating" min="1" max="5" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>Your Comment</label>
-            <textarea name="comment" class="form-control" required></textarea>
-        </div>
-        <button class="btn btn-primary">Submit Review</button>
-    </form>
+<div class="container mt-4" style="max-width: 750px;">
+
+    <h3 class="mb-3">⭐ Reviews for <span class="text-primary">{{ hotel.name }}</span></h3>
+
+    <!-- Existing Reviews -->
+    <div class="mb-4">
+        {% if reviews %}
+            {% for r in reviews %}
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h6 class="mb-1">{{ r.username }} <span class="text-warning">{{ r.rating }}⭐</span></h6>
+                    <p class="text-muted small">{{ r.comment }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No reviews yet — be the first to review!</p>
+        {% endif %}
+    </div>
+
+    <!-- Add Review Form -->
+    <div class="card shadow-sm p-3">
+        <h5>Add Your Review</h5>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label">Rating (1-5 Stars)</label>
+                <select name="rating" class="form-select" required>
+                    <option value="" disabled selected>Select rating</option>
+                    <option value="1">1 ⭐</option>
+                    <option value="2">2 ⭐⭐</option>
+                    <option value="3">3 ⭐⭐⭐</option>
+                    <option value="4">4 ⭐⭐⭐⭐</option>
+                    <option value="5">5 ⭐⭐⭐⭐⭐</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="comment" class="form-label">Your Review</label>
+                <textarea id="comment" name="comment" class="form-control" rows="3"
+                    placeholder="Share your experience..." required></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Submit Review</button>
+        </form>
+    </div>
+
 </div>
 {% endblock %}

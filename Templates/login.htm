@@ -2,19 +2,52 @@
 {% block content %}
 <div class="container mt-5" style="max-width: 500px;">
   <h3 class="text-center mb-4">🔐 Login</h3>
-  <form method="POST">
+
+  {# Flash messages (success/error) from Flask #}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="{{ url_for('login') }}">
     <div class="mb-3">
-      <label>Email</label>
-      <input type="email" name="email" class="form-control" required>
+      <label for="email" class="form-label">Email</label>
+      <input
+        type="email"
+        id="email"
+        name="email"
+        class="form-control"
+        placeholder="Enter your email"
+        autocomplete="email"
+        required
+      >
     </div>
+
     <div class="mb-3">
-      <label>Password</label>
-      <input type="password" name="password" class="form-control" required>
+      <label for="password" class="form-label">Password</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        class="form-control"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+        required
+      >
     </div>
-    <button class="btn btn-primary w-100">Login</button>
+
+    <button type="submit" class="btn btn-primary w-100" aria-label="Login">Login</button>
   </form>
+
   <p class="text-center mt-3">
-    Don’t have an account? <a href="{{ url_for('signup') }}">Sign up</a>
+    Don’t have an account?
+    <a href="{{ url_for('signup') }}">Sign up</a>
   </p>
 </div>
 {% endblock %}

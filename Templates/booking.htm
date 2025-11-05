@@ -1,22 +1,75 @@
-{% extends 'layout.htm' %}
+{% extends "layout.htm" %}
 {% block content %}
-<h3>Book {{ hotel.name }}</h3>
-<div class="card p-4 shadow-sm">
-    <form method="POST">
-        <div class="mb-3">
-            <label>Your Name</label>
-            <input type="text" name="name" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>Check-in</label>
-            <input type="date" name="checkin" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>Check-out</label>
-            <input type="date" name="checkout" class="form-control" required>
-        </div>
-        <p class="fw-bold">Price: ₹{{ hotel.price }}</p>
-        <button class="btn btn-success" type="submit">Confirm Booking</button>
-    </form>
+<div class="container" style="max-width: 680px;">
+  <h3 class="mb-3" style="font-family:'Playfair Display',serif;">Book — {{ hotel.name }}</h3>
+
+  <div class="card shadow-sm mb-3">
+    <div class="card-body d-flex justify-content-between">
+      <div>
+        <div class="text-muted">Location</div>
+        <div class="fw-semibold">{{ hotel.location }}</div>
+      </div>
+      <div class="text-end">
+        <div class="text-muted">Price / Night</div>
+        <div class="fw-semibold">Depends on room</div>
+      </div>
+    </div>
+  </div>
+
+  <form method="POST" id="bookingForm">
+    <div class="mb-3">
+      <label class="form-label">Your Name</label>
+      <input name="name" class="form-control" placeholder="Guest name" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Check-in Date (optional)</label>
+      <input type="date" name="checkin" class="form-control">
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Room Type</label>
+        <select name="room_type" id="roomType" class="form-select">
+          {% for rt in room_types %}
+            <option value="{{ rt.name }}"
+                    data-price="{{ rt.price }}"
+                    {% if preselected_room and preselected_room == rt.name %}selected{% endif %}>
+              {{ rt.name }} — ₹{{ rt.price }}/night
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Nights</label>
+        <input type="number" name="nights" id="nights" class="form-control" value="1" min="1" required>
+      </div>
+    </div>
+
+    <div class="card shadow-sm my-3">
+      <div class="card-body d-flex justify-content-between">
+        <div class="text-muted">Estimated Total</div>
+        <div class="fw-bold">₹<span id="total">0</span></div>
+      </div>
+    </div>
+
+    <button class="btn btn-main w-100">Confirm Booking</button>
+  </form>
 </div>
+
+<script>
+  const roomSel = document.getElementById('roomType');
+  const nightsEl = document.getElementById('nights');
+  const totalEl = document.getElementById('total');
+
+  function recalc() {
+    const price = Number(roomSel.selectedOptions[0].dataset.price || 0);
+    let n = parseInt(nightsEl.value || '1', 10);
+    if (isNaN(n) || n < 1) n = 1;
+    totalEl.textContent = (price * n).toString();
+  }
+  roomSel.addEventListener('change', recalc);
+  nightsEl.addEventListener('input', recalc);
+  recalc();
+</script>
 {% endblock %}

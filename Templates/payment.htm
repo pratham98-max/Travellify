@@ -1,0 +1,60 @@
+{% extends "layout.htm" %}
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+  <h3 class="mb-3">Payment — {{ desc }}</h3>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <p class="mb-1"><strong>Order ID:</strong> {{ order_id }}</p>
+      <p class="mb-1"><strong>Amount:</strong> ₹{{ amount }}</p>
+      <p class="mb-0 text-muted">This is a demo payment page — no real money will be charged.</p>
+    </div>
+  </div>
+
+  <form method="POST" action="{{ url_for('process_payment') }}" id="demoPaymentForm" novalidate>
+    <div class="mb-3">
+      <label for="card_name" class="form-label">Name on Card</label>
+      <input id="card_name" name="card_name" class="form-control" placeholder="Full name as on card" required>
+    </div>
+
+    <div class="mb-3">
+      <label for="card_number" class="form-label">Card Number</label>
+      <input id="card_number" name="card_number" class="form-control" placeholder="4242 4242 4242 4242" maxlength="19" required>
+    </div>
+
+    <div class="row g-2 mb-3">
+      <div class="col-6">
+        <label for="exp_month" class="form-label">Exp. Month</label>
+        <input id="exp_month" name="exp_month" class="form-control" placeholder="MM" maxlength="2" required>
+      </div>
+      <div class="col-6">
+        <label for="exp_year" class="form-label">Exp. Year</label>
+        <input id="exp_year" name="exp_year" class="form-control" placeholder="YYYY" maxlength="4" required>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label for="cvv" class="form-label">CVV</label>
+      <input id="cvv" name="cvv" class="form-control" placeholder="123" maxlength="4" required>
+    </div>
+
+    <button id="payBtn" type="submit" class="btn btn-primary w-100" aria-label="Pay now">
+      <span id="payBtnText">Pay ₹{{ amount }}</span>
+      <span id="paySpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+    </button>
+  </form>
+
+  <p class="text-muted mt-3 small">Demo cards: use any 16-digit number (e.g., 4242424242424242). This will NOT be sent to any gateway.</p>
+</div>
+
+<script>
+  document.getElementById('demoPaymentForm').addEventListener('submit', function() {
+    var btn = document.getElementById('payBtn');
+    var text = document.getElementById('payBtnText');
+    var spinner = document.getElementById('paySpinner');
+    btn.disabled = true;
+    spinner.classList.remove('d-none');
+    text.textContent = 'Processing...';
+  });
+</script>
+{% endblock %}

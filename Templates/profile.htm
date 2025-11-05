@@ -1,0 +1,67 @@
+{% extends "layout.htm" %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="card shadow p-4 mb-4">
+        <h3 class="fw-bold">👤 Profile Details</h3>
+        <p><strong>Name:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Role:</strong> {{ user.role|capitalize }}</p>
+    </div>
+
+    <div class="card shadow p-4 mb-4">
+        <h4 class="fw-bold">🏨 Your Bookings</h4>
+        {% if bookings %}
+        <table class="table table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>Hotel</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                    <th>Price</th>
+                    <th>Payment</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in bookings %}
+                <tr>
+                    <td>{{ b.hotel }}</td>
+                    <td>{{ b.checkin }}</td>
+                    <td>{{ b.checkout }}</td>
+                    <td>₹{{ b.price }}</td>
+                    <td>
+                        {% if b.paid %}
+                        ✅ Paid | <a href="{{ url_for('download_receipt', txn_id=b.txn_id) }}">Download Receipt</a>
+                        {% else %}
+                        <a href="{{ url_for('payment', booking_id=b._id) }}" class="btn btn-sm btn-success">Pay Now</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>You have no bookings yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="card shadow p-4 mb-4">
+        <h4 class="fw-bold">⭐ Your Reviews</h4>
+        {% if reviews %}
+        <ul class="list-group">
+        {% for r in reviews %}
+            <li class="list-group-item">
+                <strong>{{ r.hotel }}</strong> — Rated {{ r.rating }}⭐ <br>
+                "{{ r.comment }}"
+            </li>
+        {% endfor %}
+        </ul>
+        {% else %}
+        <p>You haven't written any reviews yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}
